@@ -30,7 +30,7 @@ class Wallet {
         seed,
         defaultRep, 
         autoReceive = true,
-        prefix = "nano",  
+        prefix = "nano_",  
         decimal = 30, 
         customHeaders = {}, 
         wsSubAll = false, 
@@ -49,7 +49,10 @@ class Wallet {
         this.websocket
         if (WS_URL !== undefined) {
             this.websocket = new ReconnectingWebSocket(WS_URL, [], {WebSocket: WS})
-            
+            this.websocket.onerror = (err) => {
+                console.log("Cannot connect to websocket")
+                console.log(err.message)
+            }
             this.websocket.onmessage = async msg => {
                 let data_json = JSON.parse(msg.data);
                 this.wsOnMessage(data_json)
@@ -99,7 +102,7 @@ class Wallet {
      * 
      */
     createWallet = () => {
-        let wallet = walletLib.generate();
+        let wallet = walletLib.generateLegacy();
         this.seed = wallet.seed;
         this.createAccounts(1);
         return {
@@ -117,7 +120,7 @@ class Wallet {
         if (this.seed === undefined) {
             throw new Error("No seed defined. Create a wallet first with createWallet() or use a seed in the wallet constructor");
         }
-        let accounts = walletLib.accounts(this.seed, this.lastIndex, this.lastIndex + nbAccounts);
+        let accounts = walletLib.legacyAccounts(this.seed, this.lastIndex, this.lastIndex + nbAccounts);
         this.lastIndex += nbAccounts;
         accounts.forEach((account) => {
             account["address"] = account.address.replace("nano_", this.prefix);
@@ -177,7 +180,7 @@ class Wallet {
             };
             if (account_info.error === "Account not found") { // open block
                 data["walletBalanceRaw"] = "0";
-                data["representativeAddress"] = defaultRep; // default rep
+                data["representativeAddress"] = this.defaultRep; // default rep
                 data["frontier"] = "0000000000000000000000000000000000000000000000000000000000000000";
                 data['work'] = await this.rpc.work_generate(this.getPublicKey(account));
             }

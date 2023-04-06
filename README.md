@@ -29,7 +29,7 @@ yarn add simple-nano-wallet-js
 const { Wallet } = require('simple-nano-wallet-js');
 const { wallet: walletLib} = require('multi-nano-web')
 
-let seed = walletLib.generate().seed // save & backup it somewhere!
+let seed = walletLib.generateLegacy().seed // save & backup it somewhere!
 // initialize wallet
 const wallet = new Wallet({
             RPC_URL: 'http://127.0.0.1:7076',
@@ -75,7 +75,7 @@ let headerAuth = { // custom header for authentification
 const walletXDG = new Wallet({
             RPC_URL: 'https://nodes.nanswap.com/XDG',
             WORK_URL: 'https://nodes.nanswap.com/XDG',
-            WS_URL: `ws://127.0.0.1:4001/?ticker=XDG&api=${process.env.NODES_API_KEY}`,
+            WS_URL: `wss://nodes.nanswap.com/ws/?ticker=XDG&api=${process.env.NODES_API_KEY}`,
             seed: seedXDG,
             defaultRep: "xdg_1e4ecrhmcws6kwiegw8dsbq5jstq7gqj7fspjmgiu11q55s6xnsnp3t9jqxf",
             prefix: 'xdg_',
@@ -87,7 +87,7 @@ const walletXDG = new Wallet({
 const walletBAN = new Wallet({
             RPC_URL: 'https://nodes.nanswap.com/BAN',
             WORK_URL: 'https://nodes.nanswap.com/BAN',
-            WS_URL: `ws://127.0.0.1:4001/?ticker=BAN&api=${process.env.NODES_API_KEY}`,
+            WS_URL: `wss://nodes.nanswap.com/ws/?ticker=BAN&api=${process.env.NODES_API_KEY}`,
             seed: seedBAN,
             defaultRep: "ban_1banexkcfuieufzxksfrxqf6xy8e57ry1zdtq9yn7jntzhpwu4pg4hajojmq",
             prefix: 'ban_',
