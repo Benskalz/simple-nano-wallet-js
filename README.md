@@ -79,7 +79,7 @@ const walletXDG = new Wallet({
             seed: seedXDG,
             defaultRep: "xdg_1e4ecrhmcws6kwiegw8dsbq5jstq7gqj7fspjmgiu11q55s6xnsnp3t9jqxf",
             prefix: 'xdg_',
-            decimals: 24,
+            decimal: 26,
             customHeaders: headerAuth,
             wsSubAll: false, 
         })
@@ -91,7 +91,7 @@ const walletBAN = new Wallet({
             seed: seedBAN,
             defaultRep: "ban_1banexkcfuieufzxksfrxqf6xy8e57ry1zdtq9yn7jntzhpwu4pg4hajojmq",
             prefix: 'ban_',
-            decimals: 29,
+            decimal: 29,
             customHeaders: headerAuth,
             wsSubAll: false
         })
