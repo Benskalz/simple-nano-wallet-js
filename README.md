@@ -58,8 +58,8 @@ let hashesReceive = await wallet.receiveAll("nano_3g5hpb4kwqgakt4cx11ftq6xztx1ma
 ```javascript
 // send 0.001 nano from nano_3g5hp... to nano_3g5hp...
 let hash = await wallet.send({
-        fromAccount: "nano_3g5hpb4kwqgakt4cx11ftq6xztx1matfhgkmhunj3sx4f4s3nwb6hfi3nts1", // must be in wallet. 
-        toAccount: "nano_3g5hpb4kwqgakt4cx11ftq6xztx1matfhgkmhunj3sx4f4s3nwb6hfi3nts1",
+        source: "nano_3g5hpb4kwqgakt4cx11ftq6xztx1matfhgkmhunj3sx4f4s3nwb6hfi3nts1", // must be in wallet. 
+        destination: "nano_3g5hpb4kwqgakt4cx11ftq6xztx1matfhgkmhunj3sx4f4s3nwb6hfi3nts1",
         amount: wallet.megaToRaw(0.001),
 })
         

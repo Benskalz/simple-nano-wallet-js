@@ -135,32 +135,32 @@ class Wallet {
 
     
     /**
-     * Send amount from fromAccount to toAccount.
-     * fromAccount must be in the wallet 
-     * @param {string} fromAccount
-     * @param {string} toAccount
+     * Send amount from source to destination.
+     * source must be in the wallet 
+     * @param {string} source
+     * @param {string} destination
      * @param {string} amount Amount in RAW
      * @returns {Object} RPC response, eg: {"hash": "ABCABCABC"}
      */
-    send = async ({ fromAccount, toAccount, amount }) => {
-        // we put a lock on fromAccount to allows concurrent send to be executed synchronously
+    send = async ({ source, destination, amount }) => {
+        // we put a lock on source to allows concurrent send to be executed synchronously
         // otherwise concurrent sends would create fork or bad blocks
-        return lock.acquire(fromAccount, async () => { 
-            const account_info = await this.rpc.account_info(fromAccount);
+        return lock.acquire(source, async () => { 
+            const account_info = await this.rpc.account_info(source);
             if (account_info.error !== undefined) {
                 return { error: account_info.error };
             }
             const data = {
                 walletBalanceRaw: account_info.balance,
-                fromAddress: fromAccount,
-                toAddress: toAccount,
+                fromAddress: source,
+                toAddress: destination,
                 representativeAddress: account_info.representative,
                 frontier: account_info.frontier, // Previous block
                 amountRaw: amount, // The amount to send in RAW
                 work: await this.rpc.work_generate(account_info.frontier),
             };
 
-            let pk = this.getPrivateKey(fromAccount);
+            let pk = this.getPrivateKey(source);
             const signedBlock = block.send(data, pk); // Returns a correctly formatted and signed block ready to be sent to the blockchain
             let r = await this.rpc.process(signedBlock, "send");
             return r;
