@@ -1,17 +1,15 @@
 **Simple Nano Wallet JS**
 
-Simple nano wallet with in memory key managment.  
-Made by [Nanswap Nodes](https://nanswap.com/nodes) - Hosted nodes provider
+Simple nano wallet with in memory key managment and client side signatures.  
+Compatible with any nano node RPC & Websocket. Made by [Nanswap Nodes](https://nanswap.com/nodes).
 
 **Features**
-- Easily send and receive nano with local signature
-- Use your own node or any node provider
-- Auto receive blocks of wallet accounts with websocket
+- **Send** & **Receive** nano
+- **Auto receive** wallet's incoming blocks (requires websocket)
+- Compatible with **Banano**, **DogeNano** and any nano-node network with custom prefix & decimal
 - Receive all receivable blocks for an account
 - Create wallet from seed or from random entropy
 - Create derived accounts
-- Suppport custom prefix & decimal for custom network such as Banano or DogeNano
-
 
 **Installation**  
 Using npm
@@ -98,3 +96,4 @@ const walletBAN = new Wallet({
 ```
 This lib is intended for small project (<5000 accounts), for a more scablable system, it is recommended to use a database to store the accounts keys.
 
+Credits to [nanocurrency-web](https://github.com/numsu/nanocurrency-web-js) for nano toolkit.
