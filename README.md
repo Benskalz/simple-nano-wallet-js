@@ -21,6 +21,8 @@ Using yarn
 yarn add simple-nano-wallet-js
 ```
 
+> **Security Warning:** If your seed was generated using `multi-nano-web` or `nanocurrency-web-js` via `.generate()` or `.generateLegacy()` prior to **v2.0.0** of those libraries, it should be considered **compromised**. Those versions did not use sufficient entropy during seed generation, making the resulting seeds potentially predictable. Move any funds immediately to a new seed generated with a patched version (v2.0.0+).
+
 **Usage:**  
 **Create new wallet**
 ```javascript
