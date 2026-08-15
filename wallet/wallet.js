@@ -21,8 +21,10 @@ class Wallet {
      * @param {Number} [decimal=30] Number of decimal, eg: 1 nano = 10^30 raw, 1 banano = 10^29 raw, 1 xdg = 10^24 raw
      * @param {Object} [customHeaders={}] Custom headers for RPC requests
      * @param {Boolean} [wsSubAll=true] If true, subscribe to all websocket confirmation
+     * @param {Number} [connectionTimeout=0] Pour fermer automatiquement la connection ws
      * 
      */
+
     constructor({ 
         RPC_URL, 
         WORK_URL, 
@@ -34,41 +36,50 @@ class Wallet {
         decimal = 30, 
         customHeaders = {}, 
         wsSubAll = false, 
+        connectionTimeout = 0, // 1 minute par défaut
     }) {
         this.mapAccounts = new Map();
         this.lastIndex = 0;
         this.seed = seed;
         this.prefix = prefix;
         this.decimal = decimal;
-        this.defaultRep = defaultRep; // used for openBlock only
+        this.defaultRep = defaultRep;
         let rpcHeader = {
-            "Content-Type": "application/json",
-        }
-        rpcHeader = Object.assign(rpcHeader, customHeaders)
+        "Content-Type": "application/json",
+        };
+        rpcHeader = Object.assign(rpcHeader, customHeaders);
         this.rpc = new RPC(RPC_URL, WORK_URL, rpcHeader);
-        this.websocket
+        this.websocket = null;
+
         if (WS_URL !== undefined) {
-            this.websocket = new ReconnectingWebSocket(WS_URL, [], {WebSocket: WS})
-            this.websocket.onerror = (err) => {
-                console.log("Cannot connect to websocket")
-                console.log(err.message)
+        this.websocket = new ReconnectingWebSocket(WS_URL, [], { WebSocket: WS });
+        this.websocket.onerror = (err) => {
+            console.log("Cannot connect to websocket");
+            console.log(err.message);
+        };
+        this.websocket.onmessage = async (msg) => {
+            let data_json = JSON.parse(msg.data);
+            this.wsOnMessage(data_json);
+            if (autoReceive) {
+            this.wsAutoReceiveSend(data_json);
             }
-            this.websocket.onmessage = async msg => {
-                let data_json = JSON.parse(msg.data);
-                this.wsOnMessage(data_json)
-                if (autoReceive) {
-                    this.wsAutoReceiveSend(data_json)
-                }
-            }
-            if (wsSubAll){
-                this.subscribeConfirmation()
-            }
-            else if (this.mapAccounts.size > 0) {
-                this.subscribeConfirmation(Array.from(this.mapAccounts.keys()))
-            }
+        };
+        if (wsSubAll) {
+            this.subscribeConfirmation();
+        } else if (this.mapAccounts.size > 0) {
+            this.subscribeConfirmation(Array.from(this.mapAccounts.keys()));
+        }
         }
 
-
+        // Fermer la connexion WebSocket après une durée spécifiée
+        if (connectionTimeout !== 0) {
+            setTimeout(() => {
+            if (this.websocket && this.websocket.readyState === WS.OPEN) {
+                this.websocket.close();
+                console.log("WebSocket connection closed due to timeout");
+            }
+            }, connectionTimeout);
+        }
     }
 
     /**
